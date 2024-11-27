@@ -162,23 +162,37 @@ document.getElementById('optimize-btn').addEventListener('click', () => {
     const layout = [];
     let remainingSpaces = [{ x: 0, y: 0, width: sheetWidth, height: sheetHeight }];
 
-    pieces.forEach(piece => {
-        for (let i = 0; i < remainingSpaces.length; i++) {
-            const space = remainingSpaces[i];
-            if (piece.width <= space.width && piece.height <= space.height) {
-                // Place piece
-                layout.push({ x: space.x, y: space.y, width: piece.width, height: piece.height });
+   pieces.forEach(piece => {
+    let bestFitIndex = -1;
+    let bestFitWaste = Infinity;
 
-                // Create new remaining spaces considering kerf
-                remainingSpaces.splice(i, 1);
-                remainingSpaces.push(
-                    { x: space.x + piece.width + kerfWidth, y: space.y, width: space.width - piece.width - kerfWidth, height: piece.height },
-                    { x: space.x, y: space.y + piece.height + kerfWidth, width: space.width, height: space.height - piece.height - kerfWidth }
-                );
-                break;
+    // Find the best space to fit the piece
+    for (let i = 0; i < remainingSpaces.length; i++) {
+        const space = remainingSpaces[i];
+        if (piece.width <= space.width && piece.height <= space.height) {
+            const waste = (space.width - piece.width) * (space.height - piece.height);
+            if (waste < bestFitWaste) {
+                bestFitWaste = waste;
+                bestFitIndex = i;
             }
         }
-    });
+    }
+
+    if (bestFitIndex !== -1) {
+        const space = remainingSpaces[bestFitIndex];
+
+        // Place the piece in the best-fitting space
+        layout.push({ x: space.x, y: space.y, width: piece.width, height: piece.height });
+
+        // Update remaining spaces
+        remainingSpaces.splice(bestFitIndex, 1);
+        remainingSpaces.push(
+            { x: space.x + piece.width + kerfWidth, y: space.y, width: space.width - piece.width - kerfWidth, height: piece.height },
+            { x: space.x, y: space.y + piece.height + kerfWidth, width: space.width, height: space.height - piece.height - kerfWidth }
+        );
+    }
+});
+
 
     // Draw layout on canvas
     drawLayout(sheetWidth, sheetHeight, layout);
