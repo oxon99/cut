@@ -4,55 +4,135 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cut List Optimizer</title>
-    <link rel="stylesheet" href="style.css">
-    <script>
-        // Nominal to Actual Size Map
-        const lumberSizes = {
-            "2x4": "1.5 x 3.5 inches",
-            "2x6": "1.5 x 5.5 inches",
-            "1x4": "0.75 x 3.5 inches",
-            "1x6": "0.75 x 5.5 inches"
-        };
-
-        function updateLumberSize() {
-            const select = document.getElementById('lumber-template');
-            const display = document.getElementById('actual-size-display');
-            display.innerText = lumberSizes[select.value] || "";
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
         }
-    </script>
+
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-section {
+            padding: 20px;
+            border-right: 1px solid #ddd;
+        }
+
+        .form-section h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .form-section label {
+            display: block;
+            margin: 10px 0 5px;
+            color: #555;
+        }
+
+        .form-section input, .form-section select, .form-section button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .form-section button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .form-section button:hover {
+            background-color: #45a049;
+        }
+
+        .results-section {
+            padding: 20px;
+        }
+
+        .results-section h2 {
+            color: #333;
+        }
+
+        .layout-preview {
+            width: 100%;
+            height: 400px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            font-size: 18px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Cut List Optimizer</h1>
-    <form id="cutlist-form">
-        <h2>Material Input</h2>
-        <label for="sheet-width">Sheet Width:</label>
-        <input type="number" id="sheet-width" placeholder="Width (in)" required>
-        
-        <label for="sheet-height">Sheet Height:</label>
-        <input type="number" id="sheet-height" placeholder="Height (in)" required>
-        
-        <h2>Preloaded Material Templates</h2>
-        <label for="lumber-template">Select Lumber:</label>
-        <select id="lumber-template" onchange="updateLumberSize()">
-            <option value="">--Choose Lumber--</option>
-            <option value="2x4">2x4</option>
-            <option value="2x6">2x6</option>
-            <option value="1x4">1x4</option>
-            <option value="1x6">1x6</option>
-        </select>
-        <p id="actual-size-display"></p>
-        
-        <h2>Cut Pieces</h2>
-        <label for="cut-width">Piece Width:</label>
-        <input type="number" id="cut-width" placeholder="Width (in)" required>
-        
-        <label for="cut-height">Piece Height:</label>
-        <input type="number" id="cut-height" placeholder="Height (in)" required>
-        
-        <label for="quantity">Quantity:</label>
-        <input type="number" id="quantity" placeholder="Quantity" required>
-        
-        <button type="submit">Optimize</button>
-    </form>
+    <header>
+        <h1>Cut List Optimizer</h1>
+    </header>
+    <div class="container">
+        <!-- Form Section -->
+        <div class="form-section">
+            <h2>Material Input</h2>
+            <label for="sheet-width">Sheet Width (in):</label>
+            <input type="number" id="sheet-width" placeholder="e.g., 48" required>
+
+            <label for="sheet-height">Sheet Height (in):</label>
+            <input type="number" id="sheet-height" placeholder="e.g., 96" required>
+
+            <label for="kerf-width">Kerf Width (in):</label>
+            <input type="number" id="kerf-width" placeholder="e.g., 0.125">
+
+            <label for="lumber-template">Lumber Templates:</label>
+            <select id="lumber-template">
+                <option value="">-- Select a Template --</option>
+                <option value="2x4">2x4 (1.5" x 3.5")</option>
+                <option value="2x6">2x6 (1.5" x 5.5")</option>
+                <option value="1x4">1x4 (0.75" x 3.5")</option>
+                <option value="1x6">1x6 (0.75" x 5.5")</option>
+            </select>
+
+            <button type="button" onclick="alert('Optimization feature coming soon!')">Optimize</button>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section">
+            <h2>Optimized Layout</h2>
+            <div class="layout-preview">
+                Layout Preview (coming soon)
+            </div>
+        </div>
+    </div>
+    <footer>
+        <p>Cut List Optimizer © 2024</p>
+    </footer>
 </body>
 </html>
