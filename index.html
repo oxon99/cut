@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cut List Optimizer</title>
+    <title>Sheet Goods Optimizer</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -20,119 +20,111 @@
         }
 
         .container {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 20px;
-            max-width: 1200px;
+            max-width: 800px;
             margin: 20px auto;
+            background: white;
             padding: 20px;
-            background-color: white;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
-        .form-section {
-            padding: 20px;
-            border-right: 1px solid #ddd;
-        }
-
-        .form-section h2 {
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        .form-section label {
+        label {
             display: block;
-            margin: 10px 0 5px;
-            color: #555;
+            margin-top: 10px;
         }
 
-        .form-section input, .form-section select, .form-section button {
+        input {
             width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
+            padding: 8px;
+            margin: 5px 0 10px;
+            border: 1px solid #ccc;
             border-radius: 5px;
         }
 
-        .form-section button {
+        button {
             background-color: #4CAF50;
             color: white;
+            padding: 10px 15px;
             border: none;
             cursor: pointer;
+            border-radius: 5px;
         }
 
-        .form-section button:hover {
+        button:hover {
             background-color: #45a049;
         }
 
-        .results-section {
-            padding: 20px;
-        }
-
-        .results-section h2 {
-            color: #333;
-        }
-
-        .layout-preview {
-            width: 100%;
-            height: 400px;
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #888;
-            font-size: 18px;
-        }
-
-        footer {
-            text-align: center;
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
+        .piece-list {
             margin-top: 20px;
+        }
+
+        .piece-item {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .piece-item input {
+            flex: 1;
+        }
+
+        .piece-item button {
+            background-color: #f44336;
+            border: none;
+            padding: 5px 10px;
+        }
+
+        .piece-item button:hover {
+            background-color: #e53935;
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Cut List Optimizer</h1>
+        <h1>Sheet Goods Optimizer</h1>
     </header>
     <div class="container">
-        <!-- Form Section -->
-        <div class="form-section">
-            <h2>Material Input</h2>
-            <label for="sheet-width">Sheet Width (in):</label>
-            <input type="number" id="sheet-width" placeholder="e.g., 48" required>
+        <h2>Input Sheet Dimensions</h2>
+        <label for="sheet-width">Sheet Width (in):</label>
+        <input type="number" id="sheet-width" placeholder="e.g., 48">
 
-            <label for="sheet-height">Sheet Height (in):</label>
-            <input type="number" id="sheet-height" placeholder="e.g., 96" required>
+        <label for="sheet-height">Sheet Height (in):</label>
+        <input type="number" id="sheet-height" placeholder="e.g., 96">
 
-            <label for="kerf-width">Kerf Width (in):</label>
-            <input type="number" id="kerf-width" placeholder="e.g., 0.125">
+        <h2>Pieces to Cut</h2>
+        <div id="piece-list" class="piece-list"></div>
+        <button id="add-piece-btn">Add Piece</button>
 
-            <label for="lumber-template">Lumber Templates:</label>
-            <select id="lumber-template">
-                <option value="">-- Select a Template --</option>
-                <option value="2x4">2x4 (1.5" x 3.5")</option>
-                <option value="2x6">2x6 (1.5" x 5.5")</option>
-                <option value="1x4">1x4 (0.75" x 3.5")</option>
-                <option value="1x6">1x6 (0.75" x 5.5")</option>
-            </select>
-
-            <button type="button" onclick="alert('Optimization feature coming soon!')">Optimize</button>
-        </div>
-
-        <!-- Results Section -->
-        <div class="results-section">
-            <h2>Optimized Layout</h2>
-            <div class="layout-preview">
-                Layout Preview (coming soon)
-            </div>
-        </div>
+        <button id="optimize-btn" style="margin-top: 20px;">Optimize Layout</button>
     </div>
-    <footer>
-        <p>Cut List Optimizer © 2024</p>
-    </footer>
+    <script>
+        const pieceList = document.getElementById('piece-list');
+        const addPieceBtn = document.getElementById('add-piece-btn');
+
+        // Add a new piece input row
+        function addPieceRow() {
+            const pieceItem = document.createElement('div');
+            pieceItem.className = 'piece-item';
+            pieceItem.innerHTML = `
+                <input type="number" placeholder="Width (in)" class="piece-width">
+                <input type="number" placeholder="Height (in)" class="piece-height">
+                <input type="number" placeholder="Quantity" class="piece-quantity">
+                <button type="button" onclick="removePieceRow(this)">Remove</button>
+            `;
+            pieceList.appendChild(pieceItem);
+        }
+
+        // Remove a piece input row
+        function removePieceRow(button) {
+            button.parentElement.remove();
+        }
+
+        // Add the first piece row on page load
+        addPieceRow();
+
+        // Add event listener to "Add Piece" button
+        addPieceBtn.addEventListener('click', () => {
+            addPieceRow();
+        });
+    </script>
 </body>
 </html>
