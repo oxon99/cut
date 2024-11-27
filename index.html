@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sheet Goods Optimizer</title>
@@ -100,6 +102,11 @@
         <button id="optimize-btn" style="margin-top: 20px;">Optimize Layout</button>
 
         <canvas id="layout-canvas" style="border:1px solid #000; margin-top:20px;"></canvas>
+        <div style="margin-top: 20px;">
+    <button id="export-pdf-btn" style="background-color: #4CAF50; color: white; padding: 10px; margin-right: 10px;">Export as PDF</button>
+    <button id="export-csv-btn" style="background-color: #007bff; color: white; padding: 10px;">Export as CSV</button>
+</div>
+
     </div>
     <script>
         const pieceList = document.getElementById('piece-list');
@@ -227,6 +234,47 @@ function drawLayout(sheetWidth, sheetHeight, layout) {
         ctx.strokeRect(x, y, width, height);
     });
 }
+
+document.getElementById('export-pdf-btn').addEventListener('click', () => {
+    const canvas = document.getElementById('layout-canvas');
+    const jsPDF = window.jspdf.jsPDF;
+    const pdf = new jsPDF();
+
+    // Add title and sheet details
+    pdf.setFontSize(16);
+    pdf.text('Optimized Layout', 10, 10);
+    pdf.setFontSize(12);
+    pdf.text(`Sheet Dimensions: ${canvas.width / 5} x ${canvas.height / 5} inches`, 10, 20);
+
+    // Convert canvas to image and add to PDF
+    const canvasImage = canvas.toDataURL('image/png');
+    pdf.addImage(canvasImage, 'PNG', 10, 30, 190, 90);
+
+    // Save the PDF
+    pdf.save('optimized-layout.pdf');
+});
+
+document.getElementById('export-csv-btn').addEventListener('click', () => {
+    const rows = [['Width', 'Height', 'X Position', 'Y Position']];
+    layout.forEach(piece => {
+        rows.push([piece.width, piece.height, piece.x, piece.y]);
+    });
+
+    // Convert rows to CSV string
+    let csvContent = 'data:text/csv;charset=utf-8,';
+    rows.forEach(row => {
+        csvContent += row.join(',') + '\\n';
+    });
+
+    // Create a download link and trigger download
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', 'optimized-layout.csv');
+    document.body.appendChild(link); // Required for Firefox
+    link.click();
+    document.body.removeChild(link);
+});
 
 </script>
 
