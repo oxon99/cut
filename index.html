@@ -84,6 +84,9 @@
     </header>
     <div class="container">
         <h2>Input Sheet Dimensions</h2>
+        <label for="kerf-width">Kerf Width (in):</label>
+        <input type="number" id="kerf-width" placeholder="e.g., 0.125">
+
         <label for="sheet-width">Sheet Width (in):</label>
         <input type="number" id="sheet-width" placeholder="e.g., 48">
 
@@ -134,6 +137,7 @@ document.getElementById('optimize-btn').addEventListener('click', () => {
     // Get sheet dimensions
     const sheetWidth = parseFloat(document.getElementById('sheet-width').value);
     const sheetHeight = parseFloat(document.getElementById('sheet-height').value);
+    const kerfWidth = parseFloat(document.getElementById('kerf-width').value) || 0;
 
     // Get piece dimensions and quantities
     const pieces = [];
@@ -154,7 +158,7 @@ document.getElementById('optimize-btn').addEventListener('click', () => {
     // Sort pieces by area (largest first)
     pieces.sort((a, b) => (b.width * b.height) - (a.width * a.height));
 
-    // Guillotine algorithm
+    // Guillotine algorithm with kerf width
     const layout = [];
     let remainingSpaces = [{ x: 0, y: 0, width: sheetWidth, height: sheetHeight }];
 
@@ -165,11 +169,11 @@ document.getElementById('optimize-btn').addEventListener('click', () => {
                 // Place piece
                 layout.push({ x: space.x, y: space.y, width: piece.width, height: piece.height });
 
-                // Create new remaining spaces
+                // Create new remaining spaces considering kerf
                 remainingSpaces.splice(i, 1);
                 remainingSpaces.push(
-                    { x: space.x + piece.width, y: space.y, width: space.width - piece.width, height: piece.height },
-                    { x: space.x, y: space.y + piece.height, width: space.width, height: space.height - piece.height }
+                    { x: space.x + piece.width + kerfWidth, y: space.y, width: space.width - piece.width - kerfWidth, height: piece.height },
+                    { x: space.x, y: space.y + piece.height + kerfWidth, width: space.width, height: space.height - piece.height - kerfWidth }
                 );
                 break;
             }
@@ -209,6 +213,7 @@ function drawLayout(sheetWidth, sheetHeight, layout) {
         ctx.strokeRect(x, y, width, height);
     });
 }
+
 </script>
 
 </body>
