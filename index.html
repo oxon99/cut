@@ -4,9 +4,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cut List Optimizer</title>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        // Nominal to Actual Size Map
+        const lumberSizes = {
+            "2x4": "1.5 x 3.5 inches",
+            "2x6": "1.5 x 5.5 inches",
+            "1x4": "0.75 x 3.5 inches",
+            "1x6": "0.75 x 5.5 inches"
+        };
+
+        function updateLumberSize() {
+            const select = document.getElementById('lumber-template');
+            const display = document.getElementById('actual-size-display');
+            display.innerText = lumberSizes[select.value] || "";
+        }
+    </script>
 </head>
 <body>
-    <h1>Welcome to the Cut List Optimizer</h1>
-    <p>This site is under construction.</p>
+    <h1>Cut List Optimizer</h1>
+    <form id="cutlist-form">
+        <h2>Material Input</h2>
+        <label for="sheet-width">Sheet Width:</label>
+        <input type="number" id="sheet-width" placeholder="Width (in)" required>
+        
+        <label for="sheet-height">Sheet Height:</label>
+        <input type="number" id="sheet-height" placeholder="Height (in)" required>
+        
+        <h2>Preloaded Material Templates</h2>
+        <label for="lumber-template">Select Lumber:</label>
+        <select id="lumber-template" onchange="updateLumberSize()">
+            <option value="">--Choose Lumber--</option>
+            <option value="2x4">2x4</option>
+            <option value="2x6">2x6</option>
+            <option value="1x4">1x4</option>
+            <option value="1x6">1x6</option>
+        </select>
+        <p id="actual-size-display"></p>
+        
+        <h2>Cut Pieces</h2>
+        <label for="cut-width">Piece Width:</label>
+        <input type="number" id="cut-width" placeholder="Width (in)" required>
+        
+        <label for="cut-height">Piece Height:</label>
+        <input type="number" id="cut-height" placeholder="Height (in)" required>
+        
+        <label for="quantity">Quantity:</label>
+        <input type="number" id="quantity" placeholder="Quantity" required>
+        
+        <button type="submit">Optimize</button>
+    </form>
 </body>
 </html>
