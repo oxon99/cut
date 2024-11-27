@@ -95,6 +95,8 @@
         <button id="add-piece-btn">Add Piece</button>
 
         <button id="optimize-btn" style="margin-top: 20px;">Optimize Layout</button>
+
+        <canvas id="layout-canvas" style="border:1px solid #000; margin-top:20px;"></canvas>
     </div>
     <script>
         const pieceList = document.getElementById('piece-list');
@@ -126,5 +128,88 @@
             addPieceRow();
         });
     </script>
+
+    <script>
+document.getElementById('optimize-btn').addEventListener('click', () => {
+    // Get sheet dimensions
+    const sheetWidth = parseFloat(document.getElementById('sheet-width').value);
+    const sheetHeight = parseFloat(document.getElementById('sheet-height').value);
+
+    // Get piece dimensions and quantities
+    const pieces = [];
+    document.querySelectorAll('.piece-item').forEach(item => {
+        const width = parseFloat(item.querySelector('.piece-width').value);
+        const height = parseFloat(item.querySelector('.piece-height').value);
+        const quantity = parseInt(item.querySelector('.piece-quantity').value, 10);
+        for (let i = 0; i < quantity; i++) {
+            pieces.push({ width, height });
+        }
+    });
+
+    if (!sheetWidth || !sheetHeight || pieces.length === 0) {
+        alert('Please enter valid sheet dimensions and pieces.');
+        return;
+    }
+
+    // Sort pieces by area (largest first)
+    pieces.sort((a, b) => (b.width * b.height) - (a.width * a.height));
+
+    // Guillotine algorithm
+    const layout = [];
+    let remainingSpaces = [{ x: 0, y: 0, width: sheetWidth, height: sheetHeight }];
+
+    pieces.forEach(piece => {
+        for (let i = 0; i < remainingSpaces.length; i++) {
+            const space = remainingSpaces[i];
+            if (piece.width <= space.width && piece.height <= space.height) {
+                // Place piece
+                layout.push({ x: space.x, y: space.y, width: piece.width, height: piece.height });
+
+                // Create new remaining spaces
+                remainingSpaces.splice(i, 1);
+                remainingSpaces.push(
+                    { x: space.x + piece.width, y: space.y, width: space.width - piece.width, height: piece.height },
+                    { x: space.x, y: space.y + piece.height, width: space.width, height: space.height - piece.height }
+                );
+                break;
+            }
+        }
+    });
+
+    // Draw layout on canvas
+    drawLayout(sheetWidth, sheetHeight, layout);
+});
+
+function drawLayout(sheetWidth, sheetHeight, layout) {
+    const canvas = document.getElementById('layout-canvas');
+    const ctx = canvas.getContext('2d');
+    const DIMENSION_SCALE = 5;
+
+    canvas.width = sheetWidth * DIMENSION_SCALE;
+    canvas.height = sheetHeight * DIMENSION_SCALE;
+
+    // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw sheet boundary
+    ctx.fillStyle = '#f4f4f9';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.strokeStyle = '#000';
+    ctx.strokeRect(0, 0, canvas.width, canvas.height);
+
+    // Draw pieces
+    layout.forEach(piece => {
+        const x = piece.x * DIMENSION_SCALE;
+        const y = piece.y * DIMENSION_SCALE;
+        const width = piece.width * DIMENSION_SCALE;
+        const height = piece.height * DIMENSION_SCALE;
+
+        ctx.fillStyle = '#cce5ff';
+        ctx.fillRect(x, y, width, height);
+        ctx.strokeRect(x, y, width, height);
+    });
+}
+</script>
+
 </body>
 </html>
